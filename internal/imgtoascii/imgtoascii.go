@@ -14,14 +14,16 @@ func Convert(file io.Reader) (string, error) {
 		return "", err
 	}
 
-	var ascii strings.Builder
+	var data strings.Builder
+	data.Grow(img.Bounds().Dx() * img.Bounds().Dy())
+
 	for y := 0; y < img.Bounds().Dy(); y++ {
 		for x := 0; x < img.Bounds().Dx(); x++ {
-			ascii.WriteString(grayToChar(colorToGrayScale(img.At(x, y))))
+			data.WriteByte(grayToChar(colorToGrayScale(img.At(x, y))))
 		}
-		ascii.WriteString("\n")
+		data.WriteByte('\n')
 	}
-	return ascii.String(), nil
+	return data.String(), nil
 }
 
 func colorToGrayScale(clr color.Color) uint8 {
@@ -29,8 +31,8 @@ func colorToGrayScale(clr color.Color) uint8 {
 	return uint8((2126*r + 7152*g + 722*b) / 65536 / 256)
 }
 
-var chars = [26]string{"M", "N", "H", "#", "Q", "U", "A", "D", "O", "Y", "2", "6", "8", "Z", "0", "L", "C", "J", "P", "G", "9", "S", "I", ":", "!", " "}
+var chars = [26]byte{'M', 'N', 'H', '#', 'Q', 'U', 'A', 'D', 'O', 'Y', '2', '6', '8', 'Z', '0', 'L', 'C', 'J', 'P', 'G', '9', 'S', 'I', ':', '!', ' '}
 
-func grayToChar(gray uint8) string {
+func grayToChar(gray uint8) byte {
 	return chars[gray/10]
 }
