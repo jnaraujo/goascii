@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jnaraujo/goascii/internal/ascii"
+	"github.com/jnaraujo/goascii/pkg/ascii"
 	"github.com/pixiv/go-libjpeg/jpeg"
 )
 
