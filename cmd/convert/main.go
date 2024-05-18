@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"img_to_ascii/internal/imgtoascii"
 	"log"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/jnaraujo/goascii/internal/imgtoascii"
 	"github.com/pixiv/go-libjpeg/jpeg"
 )
 

@@ -1,4 +1,4 @@
-module img_to_ascii
+module github.com/jnaraujo/goascii
 
 go 1.22.3
 
