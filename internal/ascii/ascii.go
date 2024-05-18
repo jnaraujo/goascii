@@ -1,4 +1,4 @@
-package imgtoascii
+package ascii
 
 import (
 	"image"

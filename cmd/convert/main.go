@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jnaraujo/goascii/internal/imgtoascii"
+	ascii "github.com/jnaraujo/goascii/internal/ascii"
 	"github.com/pixiv/go-libjpeg/jpeg"
 )
 
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	start := time.Now()
-	ascii, err := imgtoascii.Convert(img, imgtoascii.Options{
+	ascii, err := ascii.Convert(img, ascii.Options{
 		Columns: 80,
 	})
 	fmt.Println(time.Since(start))
