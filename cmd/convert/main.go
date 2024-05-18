@@ -5,13 +5,16 @@ import (
 	"img_to_ascii/internal/imgtoascii"
 	"log"
 	"os"
+	"strings"
 	"time"
+
+	"github.com/pixiv/go-libjpeg/jpeg"
 )
 
 func main() {
 	pwd, _ := os.Getwd()
 
-	imgPath := pwd + "/test/cat.jpg"
+	imgPath := pwd + "/test/test.jpg"
 
 	file, err := os.Open(imgPath)
 	if err != nil {
@@ -19,12 +22,21 @@ func main() {
 	}
 	defer file.Close()
 
+	img, err := jpeg.Decode(file, &jpeg.DecoderOptions{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	start := time.Now()
-	ascii, err := imgtoascii.Convert(file)
+	ascii, err := imgtoascii.Convert(img, imgtoascii.Options{
+		Columns: 80,
+	})
 	fmt.Println(time.Since(start))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	os.WriteFile(pwd+"/test/cat.txt", []byte(ascii), 0644)
+	txt := strings.Replace(ascii, "*", " ", -1)
+
+	os.WriteFile(pwd+"/test/test.txt", []byte(txt), 0644)
 }

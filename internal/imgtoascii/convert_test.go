@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 	"testing"
+
+	"github.com/pixiv/go-libjpeg/jpeg"
 )
 
 func BenchmarkConvert(b *testing.B) {
@@ -16,8 +18,12 @@ func BenchmarkConvert(b *testing.B) {
 	}
 	defer file.Close()
 
+	img, err := jpeg.Decode(file, &jpeg.DecoderOptions{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for i := 0; i < b.N; i++ {
-		file.Seek(0, 0)
-		Convert(file)
+		Convert(img, Options{})
 	}
 }
