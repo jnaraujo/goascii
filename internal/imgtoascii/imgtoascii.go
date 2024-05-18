@@ -1,13 +1,11 @@
 package imgtoascii
 
 import (
+	"image/color"
 	"io"
 	"strings"
 
 	"github.com/pixiv/go-libjpeg/jpeg"
-
-	"image/color"
-	_ "image/jpeg"
 )
 
 func Convert(file io.Reader) (string, error) {
