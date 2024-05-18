@@ -11,7 +11,6 @@ import (
 )
 
 func Convert(file io.Reader) (string, error) {
-	// img, _, err := image.Decode(file)
 	img, err := jpeg.Decode(file, &jpeg.DecoderOptions{})
 	if err != nil {
 		return "", err
