@@ -9,12 +9,26 @@ import (
 	"github.com/disintegration/imaging"
 )
 
+type Converter struct {
+	Chars []byte
+}
+
+func New() *Converter {
+	// chars from https://paulbourke.net/dataformats/asciiart/
+	var charlist = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+	var chars = []byte(charlist)
+
+	return &Converter{
+		Chars: chars,
+	}
+}
+
 type Options struct {
 	Columns int
 	Filter  *imaging.ResampleFilter
 }
 
-func Convert(img image.Image, options ...Options) (string, error) {
+func (c *Converter) Convert(img image.Image, options ...Options) (string, error) {
 	option := mergeOptions(options...)
 
 	if option.Filter == nil {
@@ -36,7 +50,7 @@ func Convert(img image.Image, options ...Options) (string, error) {
 		for x := 0; x < cols; x++ {
 			clr := resizedImg.At(x, y)
 			gray := colorToGrayScale(clr)
-			char := grayToChar(gray)
+			char := c.grayToChar(gray)
 			data.WriteByte(char)
 		}
 		data.WriteByte('\n')
@@ -53,13 +67,7 @@ func colorToGrayScale(clr color.Color) uint8 {
 	return uint8((2126*r + 7152*g + 722*b) / 65536 / 256)
 }
 
-// chars from https://paulbourke.net/dataformats/asciiart/
-var charlist = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
-var chars = []byte(charlist)
-
-// var chars = [26]byte{'M', 'N', 'H', '#', 'Q', 'U', 'A', 'D', 'O', 'Y', '2', '6', '8', 'Z', '0', 'L', 'C', 'J', 'P', 'G', '9', 'S', 'I', ':', '!', ' '}
-var charLength = uint8(math.Ceil(256 / float64(len(chars))))
-
-func grayToChar(gray uint8) byte {
-	return chars[gray/charLength]
+func (c *Converter) grayToChar(gray uint8) byte {
+	var charLength = uint8(math.Ceil(256 / float64(len(c.Chars))))
+	return c.Chars[gray/charLength]
 }

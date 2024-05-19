@@ -22,13 +22,17 @@ func main() {
 	}
 	defer file.Close()
 
+	start := time.Now()
 	img, err := jpeg.Decode(file, &jpeg.DecoderOptions{})
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(time.Since(start))
 
-	start := time.Now()
-	ascii, err := goascii.Convert(img, goascii.Options{
+	converter := goascii.New()
+
+	start = time.Now()
+	ascii, err := converter.Convert(img, goascii.Options{
 		Columns: 80,
 	})
 	fmt.Println(time.Since(start))
