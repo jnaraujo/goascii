@@ -11,10 +11,15 @@ import (
 
 type Options struct {
 	Columns int
+	Filter  *imaging.ResampleFilter
 }
 
 func Convert(img image.Image, options ...Options) (string, error) {
 	option := mergeOptions(options...)
+
+	if option.Filter == nil {
+		option.Filter = &imaging.Lanczos
+	}
 
 	cols := img.Bounds().Dx()
 	if option.Columns != 0 {
@@ -25,7 +30,7 @@ func Convert(img image.Image, options ...Options) (string, error) {
 	var data strings.Builder
 	data.Grow(cols * rows)
 
-	resizedImg := imaging.Resize(img, cols, rows, imaging.Lanczos)
+	resizedImg := imaging.Resize(img, cols, rows, *option.Filter)
 
 	for y := 0; y < rows; y++ {
 		for x := 0; x < cols; x++ {
