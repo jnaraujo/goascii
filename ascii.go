@@ -39,16 +39,18 @@ func (c *Converter) Convert(img image.Image, options ...Options) (string, error)
 	if option.Columns != 0 {
 		cols = option.Columns
 	}
-	rows := cols / 2
+	rows := int(float64(img.Bounds().Dy())*(float64(cols)/float64(img.Bounds().Dx()))) / 2
 
 	var data strings.Builder
 	data.Grow(cols * rows)
 
-	resizedImg := imaging.Resize(img, cols, rows, *option.Filter)
+	if cols != img.Bounds().Dx() && rows != img.Bounds().Dy() {
+		img = imaging.Resize(img, cols, rows, *option.Filter)
+	}
 
 	for y := 0; y < rows; y++ {
 		for x := 0; x < cols; x++ {
-			clr := resizedImg.At(x, y)
+			clr := img.At(x, y)
 			gray := colorToGrayScale(clr)
 			char := c.grayToChar(gray)
 			data.WriteByte(char)
