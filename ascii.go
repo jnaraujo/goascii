@@ -28,12 +28,13 @@ type Options struct {
 	Filter  *imaging.ResampleFilter
 }
 
-func (c *Converter) Convert(img image.Image, options ...Options) (string, error) {
-	option := mergeOptions(options...)
+var defaultOptions = &Options{
+	Filter:  &imaging.Lanczos,
+	Columns: 80,
+}
 
-	if option.Filter == nil {
-		option.Filter = &imaging.Lanczos
-	}
+func (c *Converter) Convert(img image.Image, options ...Options) (string, error) {
+	option := mergeOptions(defaultOptions, options...)
 
 	cols := img.Bounds().Dx()
 	if option.Columns != 0 {
@@ -60,8 +61,17 @@ func (c *Converter) Convert(img image.Image, options ...Options) (string, error)
 	return data.String(), nil
 }
 
-func mergeOptions(options ...Options) *Options {
-	return &options[0]
+func mergeOptions(defaultOptions *Options, options ...Options) *Options {
+	if len(options) == 0 {
+		return defaultOptions
+	}
+
+	option := options[0]
+	if option.Filter == nil {
+		option.Filter = defaultOptions.Filter
+	}
+
+	return &option
 }
 
 func colorToGrayScale(clr color.Color) uint8 {
