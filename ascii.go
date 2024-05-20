@@ -15,7 +15,7 @@ type Converter struct {
 
 func New() *Converter {
 	// chars from https://paulbourke.net/dataformats/asciiart/
-	var charlist = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+	var charlist = " .'`^\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
 	var chars = []byte(charlist)
 
 	return &Converter{
