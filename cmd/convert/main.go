@@ -29,12 +29,12 @@ func main() {
 	}
 	fmt.Println(time.Since(start))
 
-	converter := goascii.New()
-
-	start = time.Now()
-	ascii, err := converter.Convert(img, goascii.Options{
+	converter := goascii.New(goascii.Options{
 		Columns: 80,
 	})
+
+	start = time.Now()
+	ascii, err := converter.Convert(img)
 	fmt.Println(time.Since(start))
 	if err != nil {
 		log.Fatal(err)

@@ -9,23 +9,14 @@ import (
 	"github.com/disintegration/imaging"
 )
 
-type Converter struct {
-	Chars []byte
-}
-
-func New() *Converter {
-	// chars from https://paulbourke.net/dataformats/asciiart/
-	var charlist = " .'`^\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
-	var chars = []byte(charlist)
-
-	return &Converter{
-		Chars: chars,
-	}
-}
-
 type Options struct {
 	Columns int
 	Filter  *imaging.ResampleFilter
+}
+
+type Converter struct {
+	Chars   []byte
+	Options *Options
 }
 
 var defaultOptions = &Options{
@@ -33,20 +24,26 @@ var defaultOptions = &Options{
 	Columns: 80,
 }
 
-func (c *Converter) Convert(img image.Image, options ...Options) (string, error) {
-	option := mergeOptions(defaultOptions, options...)
+func New(options ...Options) *Converter {
+	// chars from https://paulbourke.net/dataformats/asciiart/
+	var charlist = " .'`^\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+	var chars = []byte(charlist)
 
-	cols := img.Bounds().Dx()
-	if option.Columns != 0 {
-		cols = option.Columns
+	return &Converter{
+		Chars:   chars,
+		Options: mergeOptions(defaultOptions, options...),
 	}
+}
+
+func (c *Converter) Convert(img image.Image) (string, error) {
+	cols := c.Options.Columns
 	rows := int(float64(img.Bounds().Dy())*(float64(cols)/float64(img.Bounds().Dx()))) / 2
 
 	var data strings.Builder
 	data.Grow(cols * rows)
 
 	if cols != img.Bounds().Dx() && rows != img.Bounds().Dy() {
-		img = imaging.Resize(img, cols, rows, *option.Filter)
+		img = imaging.Resize(img, cols, rows, *c.Options.Filter)
 	}
 
 	for y := 0; y < rows; y++ {

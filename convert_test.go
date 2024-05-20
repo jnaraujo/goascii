@@ -26,6 +26,6 @@ func BenchmarkConvert(b *testing.B) {
 	converter := New()
 
 	for i := 0; i < b.N; i++ {
-		converter.Convert(img, Options{})
+		converter.Convert(img)
 	}
 }
